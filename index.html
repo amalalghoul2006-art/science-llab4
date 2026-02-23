@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>مختبر العلوم - تجربة الترشيح</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f9ff; padding: 20px; }
+        .container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: inline-block; }
+        .lab { display: flex; justify-content: center; gap: 40px; margin-top: 20px; align-items: flex-end; }
+        .beaker { width: 110px; height: 140px; border: 3px solid #444; border-top: none; border-radius: 0 0 15px 15px; position: relative; background: #fff; }
+        .water { position: absolute; bottom: 0; width: 100%; height: 0%; background: #3498db; transition: height 1.5s; opacity: 0.7; }
+        .sand { position: absolute; bottom: 0; width: 100%; height: 35px; background: #c2b280; z-index: 2; }
+        button { padding: 12px 24px; font-size: 18px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 10px; margin: 10px; transition: 0.3s; }
+        button:hover { background: #2ecc71; }
+        .arrow { font-size: 40px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 تجربة فصل الرمل عن الماء</h1>
+        <div class="lab">
+            <div>
+                <p>مخلوط (رمل + ماء)</p>
+                <div class="beaker">
+                    <div class="water" id="w1"></div>
+                    <div class="sand" id="s1"></div>
+                </div>
+            </div>
+            <div class="arrow">⬅️</div>
+            <div>
+                <p>ماء صافي (بعد الترشيح)</p>
+                <div class="beaker">
+                    <div class="water" id="w2"></div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 30px;">
+            <button onclick="addWater()">1. إضافة الماء</button>
+            <button onclick="startFilter()">2. بدء الترشيح</button>
+        </div>
+        <h3 id="info">أهلاً بك! اضغط على (1) للبدء</h3>
+    </div>
+    <script>
+        function addWater() {
+            document.getElementById('w1').style.height = "80%";
+            document.getElementById('info').innerText = "لقد تكون مخلوط.. الرمل لا يذوب في الماء!";
+        }
+        function startFilter() {
+            document.getElementById('w1').style.height = "0%";
+            document.getElementById('w2').style.height = "80%";
+            document.getElementById('info').innerText = "رائع! ورقة الترشيح سمحت بمرور الماء وبقي الرمل في الكأس الأول.";
+        }
+    </script>
+</body>
+</html>
