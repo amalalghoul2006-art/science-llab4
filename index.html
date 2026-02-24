@@ -2,57 +2,59 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مختبر الفصل المطور 🔬</title>
+    <title>مختبر العلوم المطور 🔬</title>
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #cfd8dc; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .lab-card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; width: 550px; border: 5px solid #5d4037; }
+        body { font-family: 'Cairo', sans-serif; background: #eceff1; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .lab-card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; width: 600px; border: 6px solid #455a64; }
         
-        /* صندوق الرمل */
+        .section-title { color: #2e7d32; font-size: 18px; font-weight: bold; margin-bottom: 10px; border-right: 5px solid #2e7d32; padding-right: 10px; text-align: right; }
+        
+        /* منطقة الرمل */
         .sand-box { 
-            position: relative; height: 220px; width: 100%; margin: 15px 0; 
-            background: #e1c699; 
-            background-image: radial-gradient(#c2a679 10%, transparent 20%);
-            background-size: 6px 6px;
-            border-radius: 15px; border: 4px solid #8d6e63; overflow: hidden; cursor: crosshair;
+            position: relative; height: 180px; width: 100%; margin-bottom: 20px; 
+            background: #e1c699; background-image: radial-gradient(#c2a679 10%, transparent 20%);
+            background-size: 6px 6px; border-radius: 15px; border: 3px solid #8d6e63; overflow: hidden; cursor: none;
         }
-        
-        .magnet { 
-            font-size: 60px; position: absolute; z-index: 1000; 
-            pointer-events: none; transform: translate(-50%, -50%); 
-            line-height: 1; 
+        .magnet { font-size: 60px; position: absolute; z-index: 1000; pointer-events: none; transform: translate(-50%, -50%); }
+        .iron { position: absolute; width: 10px; height: 10px; background: #000; border-radius: 50%; z-index: 10; transition: transform 0.1s; }
+
+        /* منطقة اليد */
+        .manual-section { display: flex; align-items: center; gap: 15px; margin-top: 20px; }
+        .food-area { 
+            position: relative; height: 180px; flex: 2; background: #fff; 
+            border-radius: 15px; border: 2px dashed #ff9800; overflow: hidden;
         }
-
-        .iron { 
-            position: absolute; width: 12px; height: 12px; background: #000; 
-            border-radius: 50%; z-index: 10; pointer-events: none;
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.6);
+        .item { position: absolute; font-size: 35px; cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; }
+        .collect-bowl { 
+            flex: 1; height: 120px; background: #f1f8e9; border: 4px solid #4caf50; 
+            border-radius: 0 0 50px 50px; position: relative; display: flex; flex-wrap: wrap; 
+            align-content: flex-end; justify-content: center; padding: 10px;
         }
+        .bowl-label { position: absolute; top: -25px; width: 100%; font-size: 14px; color: #1b5e20; font-weight: bold; }
 
-        .food-area { position: relative; height: 180px; width: 100%; margin: 15px 0; background: #fff; border-radius: 15px; border: 2px dashed #ff9800; overflow: hidden; }
-        .item { position: absolute; font-size: 35px; cursor: pointer; transition: 0.3s; user-select: none; }
-
-        button { padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 15px; border: none; color: white; font-weight: bold; margin: 5px; }
+        button { padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 15px; border: none; color: white; font-weight: bold; margin: 10px 5px; }
         .btn-audio { background: #e91e63; width: 100%; }
         .btn-reset { background: #f44336; }
-        #status { font-weight: bold; color: #3e2723; background: #f5f5f5; padding: 10px; border-radius: 10px; margin-top: 10px; min-height: 40px; }
+        #status { font-weight: bold; color: #37474f; background: #f5f5f5; padding: 10px; border-radius: 10px; }
     </style>
 </head>
 <body>
 
 <div class="lab-card">
-    <h1>🔬 مختبر فصل المواد الصلبة</h1>
-    <button class="btn-audio" onclick="initAudio()">🔊 اضغطي هنا لتفعيل الصوت</button>
+    <button class="btn-audio" onclick="initAudio()">🔊 اضغطي هنا لتفعيل الصوت أولاً</button>
 
-    <p>1. مرري المغناطيس 🧲 فوق الرمل لجذب كل الحديد:</p>
-    <div class="sand-box" id="sandArea" onmousemove="catchIron(event)">
-        <div id="magnet" class="magnet" style="left: 50%; top: 20px;">🧲</div>
+    <div class="section-title">أولاً: فصل برادة الحديد عن الرمل بالمغناطيس</div>
+    <div class="sand-box" id="sandArea" onmousemove="handleMagnet(event)">
+        <div id="magnet" class="magnet">🧲</div>
     </div>
 
-    <hr>
-    <p>2. انقري على الفاصوليا 🫘 لفصلها:</p>
-    <div class="food-area" id="foodBox"></div>
+    <div class="section-title">ثانياً: التقاط حبات الفاصوليا باليد</div>
+    <div class="manual-section">
+        <div class="food-area" id="foodBox"></div>
+        <div class="collect-bowl" id="bowl"><div class="bowl-label">صحن التجميع 🛒</div></div>
+    </div>
 
-    <button class="btn-reset" onclick="resetLab()">🔄 إعادة التجربة</button>
+    <button class="btn-reset" onclick="resetLab()">🔄 إعادة التجربة بالكامل</button>
     <div id="status">جاهزة؟ فعلي الصوت وابدأي الفصل!</div>
 </div>
 
@@ -61,7 +63,7 @@
     function initAudio() {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         beep(440, 0.2);
-        document.getElementById('status').innerText = "تم تفعيل الصوت! ✅ ابدأي السحب.";
+        document.getElementById('status').innerText = "تم تفعيل الصوت! ✅ ابدأي التجربة.";
     }
 
     function beep(freq, duration) {
@@ -74,22 +76,25 @@
         osc.stop(audioCtx.currentTime + duration);
     }
 
-    function createItems() {
-        const area = document.getElementById('sandArea');
+    function createLab() {
+        // إنشاء الحديد
+        const sand = document.getElementById('sandArea');
         document.querySelectorAll('.iron').forEach(i => i.remove());
-        for(let i=0; i<20; i++) {
+        for(let i=0; i<25; i++) {
             let bit = document.createElement('div');
             bit.className = 'iron';
             bit.dataset.caught = "false";
             bit.style.left = (Math.random() * 90 + 5) + "%";
             bit.style.top = (Math.random() * 70 + 20) + "%";
-            area.appendChild(bit);
+            sand.appendChild(bit);
         }
 
+        // إنشاء المعكرونة والفاصوليا
         const box = document.getElementById('foodBox');
         box.innerHTML = "";
+        document.getElementById('bowl').innerHTML = '<div class="bowl-label">صحن التجميع 🛒</div>';
         const types = ['🧬', '🫘']; 
-        for(let i=0; i<18; i++) {
+        for(let i=0; i<16; i++) {
             let t = types[Math.floor(Math.random() * types.length)];
             let s = document.createElement('span');
             s.className = 'item'; s.innerHTML = t;
@@ -97,51 +102,54 @@
             s.style.top = Math.random() * 75 + 5 + "%";
             if(t === '🫘') {
                 s.onclick = function() {
-                    beep(600, 0.1); this.style.transform = "scale(0)";
-                    setTimeout(() => this.remove(), 200);
+                    beep(600, 0.1);
+                    const bowl = document.getElementById('bowl');
+                    this.style.left = "110%"; // حركة طيران للصحن
+                    this.style.top = "50%";
+                    setTimeout(() => {
+                        this.style.position = "static";
+                        this.style.fontSize = "20px";
+                        bowl.appendChild(this);
+                    }, 500);
                 };
             }
             box.appendChild(s);
         }
     }
 
-    function catchIron(e) {
+    function handleMagnet(e) {
         const magnet = document.getElementById('magnet');
-        const areaRect = document.getElementById('sandArea').getBoundingClientRect();
-        let mx = e.clientX - areaRect.left;
-        let my = e.clientY - areaRect.top;
+        const area = document.getElementById('sandArea').getBoundingClientRect();
+        let mx = e.clientX - area.left;
+        let my = e.clientY - area.top;
+        magnet.style.left = mx + "px"; magnet.style.top = my + "px";
 
-        // تحريك المغناطيس
-        magnet.style.left = mx + "px";
-        magnet.style.top = my + "px";
-
-        // جذب الحديد
         const bits = document.querySelectorAll('.iron');
-        bits.forEach(bit => {
-            let bx = bit.offsetLeft + 6;
-            let by = bit.offsetTop + 6;
+        bits.forEach((bit, index) => {
+            let bx = bit.offsetLeft + 5;
+            let by = bit.offsetTop + 5;
             let dist = Math.sqrt(Math.pow(mx - bx, 2) + Math.pow(my - by, 2));
 
-            // إذا اقترب المغناطيس جداً أو تم صيده سابقاً
-            if (dist < 50 || bit.dataset.caught === "true") {
+            if (dist < 60 || bit.dataset.caught === "true") {
                 if (bit.dataset.caught === "false") {
-                    beep(1000, 0.02); // صوت طقة الجذب
+                    beep(800 + (index*10), 0.02);
                     bit.dataset.caught = "true";
                 }
-                // الحديد يتبع المغناطيس بدقة 100%
-                bit.style.left = (mx - 6) + "px";
-                bit.style.top = (my + 25) + "px"; // يلتصق أسفل المغناطيس
+                // توزيع الحديد على قطبي المغناطيس (يميناً ويساراً)
+                let offset = (index % 2 === 0) ? -15 : 15;
+                bit.style.left = (mx + offset + (Math.random()*10 - 5)) + "px";
+                bit.style.top = (my + 25 + (Math.random()*10)) + "px";
             }
         });
     }
 
     function resetLab() {
         if(audioCtx) beep(300, 0.2);
-        createItems();
-        document.getElementById('status').innerText = "تمت الإعادة! جربي سحب المغناطيس الآن.";
+        createLab();
+        document.getElementById('status').innerText = "تمت إعادة المختبر! جربي مرة أخرى 🔄";
     }
 
-    createItems();
+    createLab();
 </script>
 </body>
 </html>
