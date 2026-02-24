@@ -2,54 +2,140 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>مختبر العلوم - تجربة الترشيح</title>
+    <title>مختبر فصل المخاليط 🔬</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f9ff; padding: 20px; }
-        .container { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); display: inline-block; }
-        .lab { display: flex; justify-content: center; gap: 40px; margin-top: 20px; align-items: flex-end; }
-        .beaker { width: 110px; height: 140px; border: 3px solid #444; border-top: none; border-radius: 0 0 15px 15px; position: relative; background: #fff; }
-        .water { position: absolute; bottom: 0; width: 100%; height: 0%; background: #3498db; transition: height 1.5s; opacity: 0.7; }
-        .sand { position: absolute; bottom: 0; width: 100%; height: 35px; background: #c2b280; z-index: 2; }
-        button { padding: 12px 24px; font-size: 18px; cursor: pointer; background: #27ae60; color: white; border: none; border-radius: 10px; margin: 10px; transition: 0.3s; }
-        button:hover { background: #2ecc71; }
-        .arrow { font-size: 40px; color: #7f8c8d; }
+        body { font-family: 'Cairo', sans-serif; background: #fdfdfd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow-x: hidden; }
+        .lab-container { background: #fff; padding: 25px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; width: 600px; border: 4px solid #4a148c; }
+        h1 { color: #4a148c; font-size: 22px; }
+        
+        .experiment-box { border: 2px dashed #9575cd; padding: 15px; border-radius: 20px; margin: 15px 0; position: relative; background: #f3e5f5; min-height: 200px; }
+        
+        /* تجربة المغناطيس */
+        .magnet { width: 60px; height: 60px; cursor: grab; position: absolute; top: 10px; right: 10px; z-index: 10; font-size: 40px; }
+        .iron-bit { position: absolute; width: 8px; height: 8px; background: #37474f; border-radius: 50%; transition: 0.3s; }
+        .flour { width: 100%; height: 100%; background: #fff9e6; border-radius: 15px; opacity: 0.7; }
+
+        /* تجربة المعكرونة */
+        .food-bowl { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 20px; }
+        .bean { font-size: 25px; cursor: pointer; transition: 0.3s; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.1)); }
+        .pasta { font-size: 25px; opacity: 0.8; }
+        
+        .target-bowl { border: 3px solid #66bb6a; border-radius: 50%; width: 80px; height: 80px; margin: 10px auto; background: #e8f5e9; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
+        button { padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 15px; border: none; color: white; font-weight: bold; margin: 5px; }
+        .btn-audio { background: #e91e63; width: 100%; }
+        .btn-reset { background: #ff5252; }
+        #status { font-weight: bold; color: #4a148c; margin-top: 10px; background: #eee; padding: 8px; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🧪 تجربة فصل الرمل عن الماء</h1>
-        <div class="lab">
-            <div>
-                <p>مخلوط (رمل + ماء)</p>
-                <div class="beaker">
-                    <div class="water" id="w1"></div>
-                    <div class="sand" id="s1"></div>
-                </div>
-            </div>
-            <div class="arrow">⬅️</div>
-            <div>
-                <p>ماء صافي (بعد الترشيح)</p>
-                <div class="beaker">
-                    <div class="water" id="w2"></div>
-                </div>
-            </div>
+
+<div class="lab-container">
+    <h1>🔬 مختبر فصل المواد الصلبة</h1>
+    <button class="btn-audio" onclick="initAudio()">🔊 اضغط هنا لتفعيل الصوت أولاً</button>
+
+    <div class="experiment-box" id="magnetArea">
+        <p>1. اسحب المغناطيس 🧲 لفصل برادة الحديد عن الطحين:</p>
+        <div class="flour"></div>
+        <div id="magnetIcon" class="magnet" draggable="true" ondrag="moveMagnet(event)">🧲</div>
         </div>
-        <div style="margin-top: 30px;">
-            <button onclick="addWater()">1. إضافة الماء</button>
-            <button onclick="startFilter()">2. بدء الترشيح</button>
-        </div>
-        <h3 id="info">أهلاً بك! اضغط على (1) للبدء</h3>
+
+    <hr>
+
+    <div class="experiment-box">
+        <p>2. انقر على "حبات الفاصوليا" لجمعها وفصلها عن المعكرونة:</p>
+        <div class="food-bowl" id="foodBox">
+            </div>
+        <div class="target-bowl" id="targetBowl">🛒 طبق الفاصوليا</div>
     </div>
-    <script>
-        function addWater() {
-            document.getElementById('w1').style.height = "80%";
-            document.getElementById('info').innerText = "لقد تكون مخلوط.. الرمل لا يذوب في الماء!";
+
+    <button class="btn-reset" onclick="resetLab()">🔄 إعادة التجربة بالكامل</button>
+    <div id="status">مرحباً يا بطل! فعل الصوت وابدأ الفصل.</div>
+</div>
+
+<script>
+    let audioCtx;
+    function initAudio() {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        beep(440, 0.2);
+        document.getElementById('status').innerText = "الصوت يعمل! ابدأ التجربة الآن.";
+    }
+
+    function beep(freq, duration) {
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.frequency.value = freq; osc.start();
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // توليد برادة الحديد
+    function createIron() {
+        const area = document.getElementById('magnetArea');
+        for(let i=0; i<20; i++) {
+            let bit = document.createElement('div');
+            bit.className = 'iron-bit';
+            bit.style.left = Math.random() * 80 + 10 + "%";
+            bit.style.top = Math.random() * 60 + 20 + "%";
+            area.appendChild(bit);
         }
-        function startFilter() {
-            document.getElementById('w1').style.height = "0%";
-            document.getElementById('w2').style.height = "80%";
-            document.getElementById('info').innerText = "رائع! ورقة الترشيح سمحت بمرور الماء وبقي الرمل في الكأس الأول.";
+    }
+
+    // حركة المغناطيس
+    function moveMagnet(e) {
+        if(!e.clientX) return;
+        const magnet = document.getElementById('magnetIcon');
+        const area = document.getElementById('magnetArea').getBoundingClientRect();
+        magnet.style.left = (e.clientX - area.left - 30) + "px";
+        magnet.style.top = (e.clientY - area.top - 30) + "px";
+
+        // جذب الحديد
+        const bits = document.querySelectorAll('.iron-bit');
+        bits.forEach(bit => {
+            let dx = parseInt(magnet.style.left) - parseInt(bit.style.left);
+            let dy = parseInt(magnet.style.top) - parseInt(bit.style.top);
+            let dist = Math.sqrt(dx*dx + dy*dy);
+            if(dist < 50) {
+                bit.style.left = magnet.style.left;
+                bit.style.top = magnet.style.top;
+                if(Math.random() > 0.9) beep(800, 0.05); // صوت جذب
+            }
+        });
+    }
+
+    // تجربة الفاصوليا والمعكرونة
+    function createFood() {
+        const box = document.getElementById('foodBox');
+        box.innerHTML = "";
+        for(let i=0; i<6; i++) {
+            box.innerHTML += `<span class="pasta">🍝</span>`;
+            box.innerHTML += `<span class="bean" onclick="collectBean(this)">🫘</span>`;
         }
-    </script>
+    }
+
+    function collectBean(el) {
+        beep(600, 0.1);
+        el.style.transform = "scale(0)";
+        setTimeout(() => el.remove(), 300);
+        document.getElementById('status').innerText = "أحسنت! فصلت حبة فاصوليا باليد.";
+    }
+
+    function resetLab() {
+        if(audioCtx) beep(300, 0.2);
+        const oldBits = document.querySelectorAll('.iron-bit');
+        oldBits.forEach(b => b.remove());
+        createIron();
+        createFood();
+        document.getElementById('magnetIcon').style.left = "10px";
+        document.getElementById('magnetIcon').style.top = "10px";
+        document.getElementById('status').innerText = "تمت إعادة المختبر! جرب مرة أخرى.";
+    }
+
+    // البدء الأولي
+    createIron();
+    createFood();
+</script>
 </body>
 </html>
