@@ -5,37 +5,29 @@
     <title>مختبر العلوم المطور 🔬</title>
     <style>
         body { font-family: 'Cairo', sans-serif; background: #eceff1; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .lab-card { background: white; padding: 25px; border-radius: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); text-align: center; width: 600px; border: 6px solid #455a64; }
+        .lab-card { background: white; padding: 30px; border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); text-align: center; width: 700px; border: 10px solid #546e7a; }
         
-        .section-title { color: #2e7d32; font-size: 18px; font-weight: bold; margin-bottom: 10px; border-right: 5px solid #2e7d32; padding-right: 10px; text-align: right; }
+        /* عناوين واضحة جداً */
+        .box-title { background: #4caf50; color: white; padding: 10px; border-radius: 10px; margin: 15px 0; font-size: 20px; font-weight: bold; }
+        .box-title.magnet-title { background: #795548; }
+
+        /* منطقة الفاصوليا والصحن */
+        .manual-container { display: flex; justify-content: space-around; align-items: center; background: #f1f8e9; padding: 20px; border-radius: 20px; border: 2px solid #c5e1a5; margin-bottom: 30px; }
+        .source-area { position: relative; width: 350px; height: 180px; background: white; border: 3px dashed #ff9800; border-radius: 15px; overflow: hidden; }
+        .bowl-area { width: 160px; height: 160px; background: #ffffff; border: 6px solid #4caf50; border-radius: 50%; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; position: relative; box-shadow: inset 0 0 20px rgba(0,0,0,0.1); }
+        .bowl-tag { position: absolute; top: -30px; color: #2e7d32; font-weight: bold; }
+
+        /* منطقة الرمل والمغناطيس */
+        .sand-area { position: relative; width: 100%; height: 220px; background: #e1c699; background-image: radial-gradient(#c2a679 10%, transparent 20%); background-size: 8px 8px; border: 4px solid #8d6e63; border-radius: 15px; overflow: hidden; cursor: none; }
+        .magnet-tool { font-size: 65px; position: absolute; z-index: 1000; pointer-events: none; transform: translate(-50%, -50%); }
+        .iron-piece { position: absolute; width: 10px; height: 10px; background: #000; border-radius: 50%; z-index: 10; }
+
+        .emoji-item { position: absolute; font-size: 35px; cursor: pointer; transition: all 0.4s ease-out; user-select: none; }
         
-        /* منطقة الرمل */
-        .sand-box { 
-            position: relative; height: 180px; width: 100%; margin-bottom: 20px; 
-            background: #e1c699; background-image: radial-gradient(#c2a679 10%, transparent 20%);
-            background-size: 6px 6px; border-radius: 15px; border: 3px solid #8d6e63; overflow: hidden; cursor: none;
-        }
-        .magnet { font-size: 60px; position: absolute; z-index: 1000; pointer-events: none; transform: translate(-50%, -50%); }
-        .iron { position: absolute; width: 10px; height: 10px; background: #000; border-radius: 50%; z-index: 10; transition: transform 0.1s; }
-
-        /* منطقة اليد */
-        .manual-section { display: flex; align-items: center; gap: 15px; margin-top: 20px; }
-        .food-area { 
-            position: relative; height: 180px; flex: 2; background: #fff; 
-            border-radius: 15px; border: 2px dashed #ff9800; overflow: hidden;
-        }
-        .item { position: absolute; font-size: 35px; cursor: pointer; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); user-select: none; }
-        .collect-bowl { 
-            flex: 1; height: 120px; background: #f1f8e9; border: 4px solid #4caf50; 
-            border-radius: 0 0 50px 50px; position: relative; display: flex; flex-wrap: wrap; 
-            align-content: flex-end; justify-content: center; padding: 10px;
-        }
-        .bowl-label { position: absolute; top: -25px; width: 100%; font-size: 14px; color: #1b5e20; font-weight: bold; }
-
-        button { padding: 12px 20px; font-size: 16px; cursor: pointer; border-radius: 15px; border: none; color: white; font-weight: bold; margin: 10px 5px; }
+        button { padding: 12px 25px; font-size: 16px; cursor: pointer; border-radius: 15px; border: none; color: white; font-weight: bold; margin: 10px; }
         .btn-audio { background: #e91e63; width: 100%; }
-        .btn-reset { background: #f44336; }
-        #status { font-weight: bold; color: #37474f; background: #f5f5f5; padding: 10px; border-radius: 10px; }
+        .btn-reset { background: #f44336; font-size: 18px; }
+        #msg { font-weight: bold; color: #37474f; margin-top: 15px; padding: 10px; background: #cfd8dc; border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -43,19 +35,21 @@
 <div class="lab-card">
     <button class="btn-audio" onclick="initAudio()">🔊 اضغطي هنا لتفعيل الصوت أولاً</button>
 
-    <div class="section-title">أولاً: فصل برادة الحديد عن الرمل بالمغناطيس</div>
-    <div class="sand-box" id="sandArea" onmousemove="handleMagnet(event)">
-        <div id="magnet" class="magnet">🧲</div>
+    <div class="box-title">🏷️ التقاط حبات الفاصولياء باليد</div>
+    <div class="manual-container">
+        <div class="source-area" id="foodBox"></div>
+        <div class="bowl-area" id="mainBowl">
+            <div class="bowl-tag">صحن التجميع 🍽️</div>
+        </div>
     </div>
 
-    <div class="section-title">ثانياً: التقاط حبات الفاصوليا باليد</div>
-    <div class="manual-section">
-        <div class="food-area" id="foodBox"></div>
-        <div class="collect-bowl" id="bowl"><div class="bowl-label">صحن التجميع 🛒</div></div>
+    <div class="box-title magnet-title">🧲 فصل برادة الحديد عن الرمل بالمغناطيس</div>
+    <div class="sand-area" id="sandBox" onmousemove="runMagnet(event)">
+        <div id="magnet" class="magnet-tool">🧲</div>
     </div>
 
-    <button class="btn-reset" onclick="resetLab()">🔄 إعادة التجربة بالكامل</button>
-    <div id="status">جاهزة؟ فعلي الصوت وابدأي الفصل!</div>
+    <button class="btn-reset" onclick="resetAll()">🔄 إعادة المحاولة من جديد</button>
+    <div id="msg">مرحباً معلمتي! فعلي الصوت ثم ابدئي التجربة.</div>
 </div>
 
 <script>
@@ -63,7 +57,7 @@
     function initAudio() {
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         beep(440, 0.2);
-        document.getElementById('status').innerText = "تم تفعيل الصوت! ✅ ابدأي التجربة.";
+        document.getElementById('msg').innerText = "تم تفعيل الصوت! ✅";
     }
 
     function beep(freq, duration) {
@@ -76,80 +70,83 @@
         osc.stop(audioCtx.currentTime + duration);
     }
 
-    function createLab() {
-        // إنشاء الحديد
-        const sand = document.getElementById('sandArea');
-        document.querySelectorAll('.iron').forEach(i => i.remove());
-        for(let i=0; i<25; i++) {
-            let bit = document.createElement('div');
-            bit.className = 'iron';
-            bit.dataset.caught = "false";
-            bit.style.left = (Math.random() * 90 + 5) + "%";
-            bit.style.top = (Math.random() * 70 + 20) + "%";
-            sand.appendChild(bit);
-        }
-
-        // إنشاء المعكرونة والفاصوليا
-        const box = document.getElementById('foodBox');
-        box.innerHTML = "";
-        document.getElementById('bowl').innerHTML = '<div class="bowl-label">صحن التجميع 🛒</div>';
-        const types = ['🧬', '🫘']; 
-        for(let i=0; i<16; i++) {
-            let t = types[Math.floor(Math.random() * types.length)];
-            let s = document.createElement('span');
-            s.className = 'item'; s.innerHTML = t;
-            s.style.left = Math.random() * 85 + 5 + "%";
-            s.style.top = Math.random() * 75 + 5 + "%";
-            if(t === '🫘') {
-                s.onclick = function() {
+    function setupLab() {
+        // تجهيز الفاصوليا والمعكرونة
+        const foodBox = document.getElementById('foodBox');
+        foodBox.innerHTML = "";
+        const bowl = document.getElementById('mainBowl');
+        bowl.innerHTML = '<div class="bowl-tag">صحن التجميع 🍽️</div>';
+        
+        const items = ['🧬', '🫘']; 
+        for(let i=0; i<18; i++) {
+            let type = items[Math.floor(Math.random() * items.length)];
+            let span = document.createElement('span');
+            span.className = 'emoji-item'; span.innerHTML = type;
+            span.style.left = Math.random() * 85 + 5 + "%";
+            span.style.top = Math.random() * 75 + 5 + "%";
+            
+            if(type === '🫘') {
+                span.onclick = function() {
                     beep(600, 0.1);
-                    const bowl = document.getElementById('bowl');
-                    this.style.left = "110%"; // حركة طيران للصحن
-                    this.style.top = "50%";
+                    this.style.left = "130%"; 
+                    this.style.top = "20%";
                     setTimeout(() => {
                         this.style.position = "static";
-                        this.style.fontSize = "20px";
+                        this.style.fontSize = "25px";
+                        this.style.margin = "3px";
                         bowl.appendChild(this);
-                    }, 500);
+                    }, 400);
                 };
             }
-            box.appendChild(s);
+            foodBox.appendChild(span);
+        }
+
+        // تجهيز الحديد
+        const sand = document.getElementById('sandBox');
+        document.querySelectorAll('.iron-piece').forEach(i => i.remove());
+        for(let i=0; i<35; i++) {
+            let iron = document.createElement('div');
+            iron.className = 'iron-piece';
+            iron.dataset.caught = "false";
+            iron.style.left = (Math.random() * 90 + 5) + "%";
+            iron.style.top = (Math.random() * 70 + 20) + "%";
+            sand.appendChild(iron);
         }
     }
 
-    function handleMagnet(e) {
+    function runMagnet(e) {
         const magnet = document.getElementById('magnet');
-        const area = document.getElementById('sandArea').getBoundingClientRect();
+        const area = document.getElementById('sandBox').getBoundingClientRect();
         let mx = e.clientX - area.left;
         let my = e.clientY - area.top;
         magnet.style.left = mx + "px"; magnet.style.top = my + "px";
 
-        const bits = document.querySelectorAll('.iron');
-        bits.forEach((bit, index) => {
-            let bx = bit.offsetLeft + 5;
-            let by = bit.offsetTop + 5;
-            let dist = Math.sqrt(Math.pow(mx - bx, 2) + Math.pow(my - by, 2));
+        const pieces = document.querySelectorAll('.iron-piece');
+        pieces.forEach((p, idx) => {
+            let px = p.offsetLeft + 5;
+            let py = p.offsetTop + 5;
+            let dist = Math.sqrt(Math.pow(mx - px, 2) + Math.pow(my - py, 2));
 
-            if (dist < 60 || bit.dataset.caught === "true") {
-                if (bit.dataset.caught === "false") {
-                    beep(800 + (index*10), 0.02);
-                    bit.dataset.caught = "true";
+            if (dist < 60 || p.dataset.caught === "true") {
+                if (p.dataset.caught === "false") {
+                    beep(900, 0.02);
+                    p.dataset.caught = "true";
                 }
-                // توزيع الحديد على قطبي المغناطيس (يميناً ويساراً)
-                let offset = (index % 2 === 0) ? -15 : 15;
-                bit.style.left = (mx + offset + (Math.random()*10 - 5)) + "px";
-                bit.style.top = (my + 25 + (Math.random()*10)) + "px";
+                // الالتصاق بقطبي المغناطيس
+                let side = (idx % 2 === 0) ? -18 : 18;
+                p.style.left = (mx + side + (Math.random()*8 - 4)) + "px";
+                p.style.top = (my + 28 + (Math.random()*10)) + "px";
             }
         });
     }
 
-    function resetLab() {
+    function resetAll() {
         if(audioCtx) beep(300, 0.2);
-        createLab();
-        document.getElementById('status').innerText = "تمت إعادة المختبر! جربي مرة أخرى 🔄";
+        setupLab();
+        document.getElementById('msg').innerText = "تمت إعادة المختبر! جربي مجدداً 🔄";
     }
 
-    createLab();
+    setupLab();
 </script>
 </body>
 </html>
